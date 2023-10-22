@@ -147,15 +147,15 @@ int main() {
     Lo que nos deja una matriz tridimensional. (alto x ancho x profundo)
     */
     //Crear las variables que almacenen los datos de las imagenes
-    cout<<"alto: "<<alto<<" ancho: "<<ancho<<endl;
-    cout<<"Creacion de variables"<<endl;
+    std::cout<<"alto: "<<alto<<" ancho: "<<ancho<<endl;
+    std::cout<<"Creacion de variables"<<endl;
     int*** imagen_original = new int**[ancho];
     int*** imagen_convolucionada = new int**[ancho];
     int*** imagen_borrosa = new int**[ancho];
     int*** resultado = new int**[ancho];
 
     //Reservar memoria dinamica
-    cout<<"Reserva de memoria"<<endl;
+    std::cout<<"Reserva de memoria"<<endl;
 /*8*/ for (int i = 0; i < ancho; i++) {
         imagen_original[i] = new int*[alto];
         imagen_convolucionada[i] = new int*[alto];
@@ -174,7 +174,7 @@ int main() {
 
     //La imagen original se llena con valores aleatorios simulando una imagen real.
     //El resto de imagenes se llenan con ceros
-    cout<<"\"Leer\" imagen"<<endl;
+    std::cout<<"\"Leer\" imagen"<<endl;
 /*21*/    for(int i=0;i<ancho;i++){
 /*22*/        for(int j=0;j<alto;j++){
 /*23*/            for(int k=0;k<3;k++){
@@ -187,41 +187,41 @@ int main() {
 /*30*/    }
 
     //Empieza el cronometro
-    cout<<"Empieza el cronometro"<<endl;
+    std::cout<<"Empieza el cronometro"<<endl;
     auto start = chrono::high_resolution_clock::now();
 
     //Paso 1: Aplicar una mascara de convolucion a la imagen original.
     //Este paso es independiente.
-    cout<<"Paso 1"<<endl;
+    std::cout<<"Paso 1"<<endl;
     imagen_convolucionada=convolucion(imagen_original);
     
     //Paso 2: Aplicar un filtro de desenfoque a la imagen original.
     //Este paso es independiente.
-    cout<<"Paso 2"<<endl;
+    std::cout<<"Paso 2"<<endl;
     imagen_borrosa=desenfocar(imagen_original);
 
     //Paso 3: Aplicar una mascara de convolucion a la imagen con mascara anterior.
     //Este paso es dependiente del paso 1.
-    cout<<"Paso 3"<<endl;
+    std::cout<<"Paso 3"<<endl;
     imagen_convolucionada=convolucion(imagen_convolucionada);
     
     //Paso 4: Aplicar un filtro de desenfoque a la imagen con filtro de desenfoque anterior.
     //Este paso es dependiente del paso 2.
-    cout<<"Paso 4"<<endl;
+    std::cout<<"Paso 4"<<endl;
     imagen_borrosa=desenfocar(imagen_borrosa);
 
 
     //Paso 5: Restar la imagen con mascara convolucion a la imagen con filtro de desenfoque.
     //El resultado es una imagen borrosa con los bordes resaltados.
     //Este paso es dependiente del paso 3 y 4.
-    cout<<"Paso 5"<<endl;
+    std::cout<<"Paso 5"<<endl;
     resultado=combinar(imagen_convolucionada,imagen_borrosa);
  
     //Termina el cronometro
-    cout<<"Termina el cronometro"<<endl;
+    std::cout<<"Termina el cronometro"<<endl;
     auto finish = chrono::high_resolution_clock::now();
-    cout << "Tiempo de ejecución: ";
-    cout << chrono::duration_cast<chrono::milliseconds>(finish - start).count() << endl;
+    std::cout << "Tiempo de ejecución: ";
+    std::cout << chrono::duration_cast<chrono::milliseconds>(finish - start).count() << endl;
 /*47*/    for (int i = 0; i < ancho; i++) {
 /*48*/        for (int j = 0; j < alto; j++) {
             delete[] imagen_original[i][j];
