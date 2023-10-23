@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <math.h>
 using namespace std;
-const int alto = 2000;
-const int ancho = 2000;
+int alto;
+int ancho;
 //Funcion que aplica una mascara de convolucion a una imagen.
 //Resalta los bordes de la imagen.
 int*** convolucion(int *** imagen){
@@ -140,7 +140,14 @@ int*** combinar(int*** imagen_convolucionada, int*** imagen_borrosa){
 /*18*/    }
     return resultado;
 /*20*/}
-int main() {
+int main(int argc, char *argv[]) {
+    if (argc != 3) {
+        cout << "Uso: " << argv[0] << " <ancho> <alto>" << endl;
+        return 1;
+    }
+     ancho = atoi(argv[1]);
+     alto = atoi(argv[2]);
+
     /*
     Una imagen es una matriz bidimensional de pixeles. (alto x ancho)
     Cada pixel tiene 3 valores: rojo, verde y azul. (profundo)
@@ -148,14 +155,14 @@ int main() {
     */
     //Crear las variables que almacenen los datos de las imagenes
     std::cout<<"alto: "<<alto<<" ancho: "<<ancho<<endl;
-    std::cout<<"Creacion de variables"<<endl;
+    //std::cout<<"Creacion de variables"<<endl;
     int*** imagen_original = new int**[ancho];
     int*** imagen_convolucionada = new int**[ancho];
     int*** imagen_borrosa = new int**[ancho];
     int*** resultado = new int**[ancho];
 
     //Reservar memoria dinamica
-    std::cout<<"Reserva de memoria"<<endl;
+    //std::cout<<"Reserva de memoria"<<endl;
 /*8*/ for (int i = 0; i < ancho; i++) {
         imagen_original[i] = new int*[alto];
         imagen_convolucionada[i] = new int*[alto];
@@ -174,51 +181,51 @@ int main() {
 
     //La imagen original se llena con valores aleatorios simulando una imagen real.
     //El resto de imagenes se llenan con ceros
-    std::cout<<"\"Leer\" imagen"<<endl;
+    //std::cout<<"\"Leer\" imagen"<<endl;
 /*21*/    for(int i=0;i<ancho;i++){
 /*22*/        for(int j=0;j<alto;j++){
 /*23*/            for(int k=0;k<3;k++){
-                imagen_original[i][j][k]=rand()%255;
-                imagen_convolucionada[i][j][k]=0;
-                imagen_borrosa[i][j][k]=0;
-                resultado[i][j][k]=0;
+                    imagen_original[i][j][k]=rand()%255;
+                    imagen_convolucionada[i][j][k]=0;
+                    imagen_borrosa[i][j][k]=0;
+                    resultado[i][j][k]=0;
 /*28*/            }
 /*29*/        }
 /*30*/    }
 
     //Empieza el cronometro
-    std::cout<<"Empieza el cronometro"<<endl;
+    //std::cout<<"Empieza el cronometro"<<endl;
     auto start = chrono::high_resolution_clock::now();
 
     //Paso 1: Aplicar una mascara de convolucion a la imagen original.
     //Este paso es independiente.
-    std::cout<<"Paso 1"<<endl;
+    //std::cout<<"Paso 1"<<endl;
     imagen_convolucionada=convolucion(imagen_original);
     
     //Paso 2: Aplicar un filtro de desenfoque a la imagen original.
     //Este paso es independiente.
-    std::cout<<"Paso 2"<<endl;
+    //std::cout<<"Paso 2"<<endl;
     imagen_borrosa=desenfocar(imagen_original);
 
     //Paso 3: Aplicar una mascara de convolucion a la imagen con mascara anterior.
     //Este paso es dependiente del paso 1.
-    std::cout<<"Paso 3"<<endl;
+    //std::cout<<"Paso 3"<<endl;
     imagen_convolucionada=convolucion(imagen_convolucionada);
     
     //Paso 4: Aplicar un filtro de desenfoque a la imagen con filtro de desenfoque anterior.
     //Este paso es dependiente del paso 2.
-    std::cout<<"Paso 4"<<endl;
+    //std::cout<<"Paso 4"<<endl;
     imagen_borrosa=desenfocar(imagen_borrosa);
 
 
     //Paso 5: Restar la imagen con mascara convolucion a la imagen con filtro de desenfoque.
     //El resultado es una imagen borrosa con los bordes resaltados.
     //Este paso es dependiente del paso 3 y 4.
-    std::cout<<"Paso 5"<<endl;
-    resultado=combinar(imagen_convolucionada,imagen_borrosa);
- 
+    //std::cout<<"Paso 5"<<endl;
+    resultado = combinar(imagen_convolucionada,imagen_borrosa);
+
     //Termina el cronometro
-    std::cout<<"Termina el cronometro"<<endl;
+    //std::cout<<"Termina el cronometro"<<endl;
     auto finish = chrono::high_resolution_clock::now();
     std::cout << "Tiempo de ejecución: ";
     std::cout << chrono::duration_cast<chrono::milliseconds>(finish - start).count() << endl;
